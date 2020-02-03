@@ -1,6 +1,5 @@
 #Importing all modules
 import pygame as pg
-import pygameMenu as pgm
 import sys
 from os import path
 from settings import *
@@ -26,37 +25,62 @@ def draw_player_health(surf, x, y, pct):
     pg.draw.rect(surf,col,fill_rect)
     pg.draw.rect(surf,WHITE,outline_rect,2)
 
+def draw_player_gems(surf,x,y,gems):
+    if gems < 0:
+        gems = 0
+    GEM_DIM = 30
+    outline= pg.Rect(x,y,GEM_DIM,GEM_DIM)
+    fill_rect = pg.Rect(x,y,GEM_DIM,GEM_DIM)
+    pg.draw.rect(surf,YELLOW,fill_rect)
+    pg.draw.rect(surf,BLACK,outline,2)
+    font = pg.font.SysFont('Aerial', 20, True, False)
+    text = font.render(str(gems), True, BLACK)
+    surf.blit(text,(WIDTH-40,20))
+
 class Game:
     def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((WIDTH,HEIGHT))
+        self.start_menu = True
+        self.story = False
+        self.endless = False
+        self.multiplayer = False
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
+        self.font = pg.font.Font(None, 32)
+        self.font_color = (100, 200, 150)
         #Setting repeat rate for buttons
         pg.key.set_repeat(500, 100)
-        self.load_story_data()
 
-    def load_menu_data(self):
-        pgm.Menu(screen,WIDTH,HEIGHT,FONT,"GAME")
-    def load_story_data(self):
+    def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder,"img")
         map_folder = path.join(game_folder,"maps")
-        self.map = TiledMap(path.join(map_folder,"test.tmx"))
+        if self.story == True:
+            self.map = TiledMap(path.join(map_folder,"test.tmx"))
+        elif self.endless == True:
+            self.map = TiledMap(path.join(map_folder,"endless.tmx"))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = pg.image.load(path.join(img_folder,PLAYER_IMG)).convert_alpha()
         self.mob_img = pg.image.load(path.join(img_folder,MOB_IMG)).convert_alpha()
+        self.melee_img = pg.image.load(path.join(img_folder,ARROW_IMG)).convert_alpha()
         self.arrow_img = pg.image.load(path.join(img_folder,ARROW_IMG)).convert_alpha()
         self.wall_img = pg.image.load(path.join(img_folder, WALL_IMG)).convert_alpha()
         self.wall_img = pg.transform.scale(self.wall_img, (TILESIZE,TILESIZE))
-
+        #self.image_images = {}
+        #for item in ITEM_IMAGES:
+         #   self.item_images[item] = pg.image.load(path.join(img_folder,ITEM_IMAGES[item])).convert_alpha
+    
     def new(self):
+        self.load_data()
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.teleport = pg.sprite.Group()
         self.healing_pool = pg.sprite.Group()
+        self.melee = pg.sprite.Group()
         self.arrows = pg.sprite.Group()
+        self.items = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         
         #for row, tiles in enumerate(self.map.data):
@@ -69,8 +93,12 @@ class Game:
                #     self.player=Player(self,col,row)
         
         for tile_object in self.map.tmxdata.objects:
+            obj_center = vec(tile_object.x + tile_object.width / 2, tile_object.y + tile_object.height / 2)
             if tile_object.name == "player":
                 self.player = Player(self, tile_object.x,tile_object.y)
+            if tile_object.name == "mob":
+                print("hey")
+                Mob(self,tile_object.x,tile_object.y)
             if tile_object.name == "wall":
                 Obstacle(self,tile_object.x,tile_object.y,tile_object.width,tile_object.height)
             if tile_object.name == "healing_pool":
@@ -94,7 +122,7 @@ class Game:
             self.update()
             self.draw()
 
-    def quite(self):
+    def quit(self):
         pg.quit()
         sys.exit()
     
@@ -107,13 +135,22 @@ class Game:
             self.player.health -= MOB_DAMAGE
             hit.vel = vec(0,0)
             if self.player.health <= 0:
-                self.playing = False
+                self.endless = False
+                self.story = False
+                self.start_menu = True
+                self.nav()
         if hits:
             self.player.pos += vec(MOB_KNOCKBACK, 0).rotate(-hits[0].rot)
         # arrows hit mobs
         hits = pg.sprite.groupcollide(self.mobs,self.arrows, False, True)
         for hit in hits:
             hit.health -= ARROW_DAMAGE
+            hit.vel = vec(0,0)
+        
+        # Melee hits mob
+        hits = pg.sprite.groupcollide(self.mobs,self.melee,False,True)
+        for hit in hits:
+            hit.health -= MELEE_DAMAGE
             hit.vel = vec(0,0)
 
     def draw_grid(self):
@@ -134,6 +171,7 @@ class Game:
         #Displays hit rectangle
         #pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2 )
         draw_player_health(self.screen,10,10,self.player.health / PLAYER_HEALTH)
+        draw_player_gems(self.screen,WIDTH-50,10,self.player.gems)
         pg.display.flip()
     
 
@@ -146,16 +184,40 @@ class Game:
                     self.quit()
     
     def show_start_screen(self):
-        pass
+        start = True
+        while start == True:
+            game_folder = path.dirname(__file__)
+            img_folder = path.join(game_folder,"img")
+            menu = pg.image.load(path.join(img_folder,MENU_IMG)).convert_alpha()
+            self.screen.blit(menu,(0,0))
+            pg.display.flip()
+            single_player = pg.Rect(503,220,470,100)
+            endless = pg.Rect(503,320,470,100)
+            multiplayer = pg.Rect(503,420,470,100)
+            for event in pg.event.get():
+                if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                    pos = pg.mouse.get_pos()
+                    if single_player.collidepoint(pos):
+                        self.start_menu = False
+                        self.story = True
+                        self.nav()
+                    if endless.collidepoint(pos):
+                        self.start_menu = False
+                        self.endless = True
+                        self.nav()
     
+    def nav(self):
+        while self.start_menu:
+                self.show_start_screen()
+        while self.story or self.endless:
+            self.new()
+            self.run()
+            self.show_go_screen()
     def show_go_screen(self):
         pass
-    
+
 
 #Creating Game
 game = Game()
-game.show_start_screen()
 while True:
-    game.new()
-    game.run()
-    game.show_go_screen()
+    game.nav()
