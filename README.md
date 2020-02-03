@@ -4,6 +4,9 @@ Hi! My project is to create an 8 bit action / adventure game much along the line
 The game will feature a Single Player mode at first and then branch out to a multiplayer game (hopefully!).
 Over the coming months this game will be under development and will be done by the end April.
 
+# Installation
+To install download the repo. In requirements.txt you will find all the dependencies. These can be installed using ``pip install ...``
+Then run main using Python main.py
 
 # SinglePlayer
 
