@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="231">
+<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="897">
  <tileset firstgid="1" source="../../../Documents/Asets.tsx"/>
  <tileset firstgid="113" source="../../../Documents/tilesheet_complete.tsx"/>
  <tileset firstgid="2273" source="tile-8bit.tsx"/>
@@ -234,7 +234,7 @@
   <object id="79" name="wall" x="768" y="2496" width="32" height="96"/>
   <object id="80" name="wall" x="160" y="2464" width="32" height="64"/>
   <object id="81" x="1728" y="1984" height="160"/>
-  <object id="83" name="wall" x="192" y="224" width="32" height="384"/>
+  <object id="83" name="wall" x="160" y="224" width="64" height="384"/>
   <object id="84" name="wall" x="544" y="608" width="32" height="192"/>
   <object id="85" name="wall" x="512" y="1184" width="32" height="64"/>
   <object id="86" name="wall" x="480" y="1248" width="32" height="32"/>
@@ -273,7 +273,7 @@
   <object id="120" name="wall" x="1152" y="352" width="32" height="32"/>
   <object id="121" name="wall" x="1184" y="384" width="32" height="32"/>
   <object id="122" name="wall" x="1120" y="224" width="32" height="128"/>
-  <object id="123" name="wall" x="160" y="608" width="384" height="32"/>
+  <object id="123" name="wall" x="160" y="608" width="384" height="64"/>
   <object id="124" name="wall" x="160" y="896" width="384" height="64"/>
   <object id="125" name="wall" x="544" y="1120" width="544" height="64"/>
   <object id="126" name="wall" x="416" y="1504" width="800" height="64"/>
@@ -330,20 +330,8 @@
   <object id="183" name="wall" x="1760" y="448" width="32" height="64"/>
   <object id="184" name="wall" x="1728" y="480" width="32" height="64"/>
   <object id="185" name="wall" x="1280" y="448" width="32" height="64"/>
-  <object id="211" name="mob" x="704" y="768" width="32" height="32"/>
-  <object id="212" name="mob" x="992" y="640" width="32" height="32"/>
-  <object id="213" name="mob" x="864" y="896" width="32" height="32"/>
-  <object id="214" name="mob" x="864" y="2016" width="32" height="32"/>
-  <object id="215" name="mob" x="1216" y="1760" width="32" height="32"/>
-  <object id="216" name="mob" x="1280" y="2080" width="32" height="32"/>
-  <object id="217" name="mob" x="800" y="2336" width="32" height="32"/>
-  <object id="218" name="mob" x="1952" y="1248" width="32" height="32"/>
-  <object id="219" name="mob" x="2528" y="1120" width="32" height="32"/>
-  <object id="220" name="mob" x="1664" y="832" width="32" height="32"/>
-  <object id="221" name="mob" x="2784" y="672" width="32" height="32"/>
-  <object id="222" name="mob" x="2784" y="288" width="32" height="32"/>
-  <object id="223" name="mob" x="2336" y="320" width="32" height="32"/>
   <object id="225" name="wall" x="1248" y="512" width="96" height="1024"/>
   <object id="226" name="wall" x="1344" y="544" width="160" height="1056"/>
+  <object id="232" name="mob" x="768" y="672" width="32" height="32"/>
  </objectgroup>
 </map>

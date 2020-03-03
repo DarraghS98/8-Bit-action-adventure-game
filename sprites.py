@@ -27,8 +27,6 @@ def teleport_player(sprite,group):
             elif hits[0].name == "teleport_4":
                 sprite.pos = vec(544.0,256.0)
                 time.sleep(.2)
-                
-                
 
 def collide_with_walls(sprite,group, dir):
     if dir == "x":
@@ -53,6 +51,7 @@ def collide_with_walls(sprite,group, dir):
 
 class Player(pg.sprite.Sprite):
     def __init__(self,game,x,y):
+        self._layer = PLAYER_LAYER
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -65,11 +64,12 @@ class Player(pg.sprite.Sprite):
         self.rot = 0
         self.last_shot = 0
         self.change = 0
-        self.health = 3
+        self.health = 100
         self.potions = 0
         self.gems = 99
         self.melee = True
         self.bow = False
+        self.kills = 0
 
     def get_keys(self):
         self.rot_speed = 0
@@ -114,15 +114,21 @@ class Player(pg.sprite.Sprite):
                     self.last_shot = now
                     print(self.rot)
                     if self.rot >= 315 or self.rot <= 45:
-                        print("RIGHT")
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y))
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y-TILESIZE))
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y+TILESIZE))
                     elif self.rot >= 46 and self.rot <= 135:
-                        print("UP")
+                        Melee(self.game,vec(self.pos.x,self.pos.y - TILESIZE))
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y-TILESIZE))
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y-TILESIZE))
                     elif self.rot >= 136 and self.rot <= 225:
-                        print("LEFT")
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y))
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y - TILESIZE))
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y + TILESIZE))
                     elif self.rot >= 226 and self.rot <= 315:
-                        print(self.pos.x)
-                        attack = [vec(self.pos.x,self.pos.y+TILESIZE),vec(self.pos.x - TILESIZE,self.pos.y+TILESIZE),vec(self.pos.x + TILESIZE,self.pos.y+TILESIZE)]
-                        Melee(self.game,attack)
+                        Melee(self.game,vec(self.pos.x,self.pos.y+TILESIZE))
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y+TILESIZE))
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y+TILESIZE))
 
 
     def update(self):
@@ -140,9 +146,14 @@ class Player(pg.sprite.Sprite):
         teleport_player(self,self.game.teleport)
         healing_pool_check(self,self.game.healing_pool)
 
+    def add_health(self, amount):
+        self.health += amount
+        if self.health > PLAYER_HEALTH:
+            self.health = PLAYER_HEALTH
 
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
+        self._layer = MOB_LAYER
         self._layer = MOB_LAYER
         self.groups = game.all_sprites, game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -185,6 +196,16 @@ class Mob(pg.sprite.Sprite):
         self.rect.center = self.hit_rect.center
         if self.health <= 0:
             self.kill()
+            if self.game.endless == True:
+                mob1, mob2 = Mob(self.game,randint(1100,1500),randint(1100,1500)),Mob(self.game,randint(1100,1500),randint(1100,1500))
+                if self.game.player.kills == 5:
+                    ARROW_RATE = 800
+                elif self.game.player.kills == 10:
+                    ARROW_RATE = 100
+                elif self.game.player.kills == 15:
+                    ARROW_RATE = 1
+                self.game.player.kills += 1
+            
     
     def draw_health(self):
         if self.health > 60:
@@ -235,6 +256,7 @@ class HealingPool(pg.sprite.Sprite):
 
 class Arrow(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
+        self._layer = BULLET_LAYER
         self.groups = game.all_sprites, game.arrows
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -255,21 +277,27 @@ class Arrow(pg.sprite.Sprite):
 
 class Melee(pg.sprite.Sprite):
     def __init__(self,game,pos):
+        self._layer = BULLET_LAYER
         self.groups = game.all_sprites, game.arrows
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         self.image = game.melee_img
         self.rect = self.image.get_rect()
         self.pos = pos
+        self.rect.center = pos
+        self.spawn_time = pg.time.get_ticks()
     
     def update(self):
-        for attack in self.pos:
-            self.rect.center = attack
-            if pg.sprite.spritecollideany(self,self.game.walls):
-                self.kill()
+        self.rect.center = self.pos
+        if pg.sprite.spritecollideany(self,self.game.walls):
+            self.kill()
+        if pg.time.get_ticks() - self.spawn_time > MELEE_LIFETIME:
+            self.kill()
+
             
 class Item(pg.sprite.Sprite):
-    def __init__(self,game, pos, type):
+    def __init__(self,game,pos,type):
+        self.layer = ITEMS_LAYER
         self.groups = game.all_sprites, game.items
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -277,3 +305,4 @@ class Item(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.type = type
         self.rect.center = pos
+        self.pos = pos
