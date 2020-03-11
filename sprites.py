@@ -133,7 +133,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.get_keys()
-        self.rot = (self.rot + self.rot_speed + self.game.dt) % 360
+        self.rot = (self.rot)
         self.image = pg.transform.rotate(self.game.player_img, self.rot)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
