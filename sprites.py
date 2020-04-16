@@ -54,21 +54,24 @@ class Player(pg.sprite.Sprite):
         self._layer = PLAYER_LAYER
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
-        self.game = game
-        self.image = game.player_img
+        self.image = game.player_idle
         self.rect = self.image.get_rect()
         self.hit_rect = PLAYER_HIT_RECT
         self.hit_rect.center = self.rect.center
+        self.game = game
         self.vel = vec(0,0)
         self.pos = vec(x,y)
         self.rot = 0
         self.last_shot = 0
         self.change = 0
+        self.arrow_image = None
         self.health = 100
+        self.controls = True
         self.potions = 0
-        self.gems = 99
-        self.melee = True
-        self.bow = False
+        self.direction = "south"
+        self.counter = 0
+        self.gems = 0
+        self.attack = "melee"
         self.kills = 0
 
     def get_keys(self):
@@ -76,65 +79,74 @@ class Player(pg.sprite.Sprite):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
+            for images in range(0,len(self.game.player_west)):
+                self.image = self.game.player_west[images//randint(1,5)]
+            self.arrow_image = self.game.arrow_images[2]
+            self.sword_swipe = self.game.sword_swipe_hor
             self.rot = 180
             self.vel = vec(-PLAYER_SPEED,0)
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            for images in range(0,len(self.game.player_east)):
+                self.image = self.game.player_east[images//randint(1,5)]
+            self.arrow_image = self.game.arrow_images[1]
+            self.sword_swipe = self.game.sword_swipe_hor
             self.rot = 0
             self.vel = vec(PLAYER_SPEED,0)
         if keys[pg.K_UP] or keys[pg.K_w]:
+            for images in range(0,len(self.game.player_north)):
+                self.image = self.game.player_north[images//randint(1,5)]
+            self.arrow_image = self.game.arrow_images[0]
+            self.sword_swipe = self.game.sword_swipe_vert
             self.rot = 90
             self.vel = vec(0,-PLAYER_SPEED)
         if keys[pg.K_DOWN] or keys[pg.K_s]:
+            for images in range(0,len(self.game.player_south)):
+                self.image = self.game.player_south[images//randint(1,5)]
+            self.arrow_image = self.game.arrow_images[3]
+            self.sword_swipe = self.game.sword_swipe_vert
             self.rot = 270
             self.vel = vec(0,PLAYER_SPEED)
         if keys[pg.K_q]:
             now = pg.time.get_ticks()
             if now - self.change > CHANGE_RATE:
                 self.change = now
-                if self.melee == True:
-                    self.bow = True
-                    self.melee = False
-                    print("bow")
+                if self.attack == "melee":
+                    self.attack = "bow"
                 else:
-                    self.bow = False
-                    self.melee = True
-                    print("melee")
+                    self.attack = "melee"
 
         if keys[pg.K_SPACE]:
-            if self.bow == True:
+            if self.attack == "bow":
                 now = pg.time.get_ticks()
                 if now - self.last_shot > ARROW_RATE:
                     self.last_shot = now
                     dir = vec(1,0).rotate(-self.rot)
                     pos = self.pos + BOW_OFFSET.rotate(-self.rot)
-                    Arrow(self.game,pos,dir)
-            elif self.melee == True:
+                    Arrow(self.game,pos,dir,self.arrow_image)
+            elif self.attack == "melee":
                 now = pg.time.get_ticks()
                 if now - self.last_shot > ARROW_RATE:
                     self.last_shot = now
-                    print(self.rot)
                     if self.rot >= 315 or self.rot <= 45:
-                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y))
-                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y-TILESIZE))
-                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y+TILESIZE))
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y-TILESIZE),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y+TILESIZE),self.sword_swipe)
                     elif self.rot >= 46 and self.rot <= 135:
-                        Melee(self.game,vec(self.pos.x,self.pos.y - TILESIZE))
-                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y-TILESIZE))
-                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y-TILESIZE))
+                        Melee(self.game,vec(self.pos.x,self.pos.y - TILESIZE),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y-TILESIZE),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y-TILESIZE),self.sword_swipe)
                     elif self.rot >= 136 and self.rot <= 225:
-                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y))
-                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y - TILESIZE))
-                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y + TILESIZE))
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y - TILESIZE),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y + TILESIZE),self.sword_swipe)
                     elif self.rot >= 226 and self.rot <= 315:
-                        Melee(self.game,vec(self.pos.x,self.pos.y+TILESIZE))
-                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y+TILESIZE))
-                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y+TILESIZE))
-
+                        Melee(self.game,vec(self.pos.x,self.pos.y+TILESIZE),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x - TILESIZE,self.pos.y+TILESIZE),self.sword_swipe)
+                        Melee(self.game,vec(self.pos.x + TILESIZE,self.pos.y+TILESIZE),self.sword_swipe)
 
     def update(self):
         self.get_keys()
-        self.rot = (self.rot + self.rot_speed + self.game.dt) % 360
-        self.image = pg.transform.rotate(self.game.player_img, self.rot)
+        self.rot = (self.rot)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
@@ -145,6 +157,7 @@ class Player(pg.sprite.Sprite):
         self.rect.center = self.hit_rect.center
         teleport_player(self,self.game.teleport)
         healing_pool_check(self,self.game.healing_pool)
+        
 
     def add_health(self, amount):
         self.health += amount
@@ -231,6 +244,17 @@ class Obstacle(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y 
 
+class Level(pg.sprite.Sprite):
+    def __init__(self,game,x,y,w,h):
+        self.groups = game.levels
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.game = game
+        self.rect = pg.Rect(x,y,w,h)
+        self.x = x
+        self.y = y
+        self.rect.x = x
+        self.rect.y = y 
+
 class Teleport(pg.sprite.Sprite):
     def __init__(self,game,x,y,w,h,name):
         self.groups = game.teleport
@@ -242,7 +266,8 @@ class Teleport(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.name = name
-
+        self.controls = True
+    
 class HealingPool(pg.sprite.Sprite):
     def __init__(self,game,x,y,w,h):
         self.groups = game.healing_pool
@@ -255,12 +280,12 @@ class HealingPool(pg.sprite.Sprite):
         self.rect.y = y
 
 class Arrow(pg.sprite.Sprite):
-    def __init__(self,game,pos,dir):
+    def __init__(self,game,pos,dir,arrow_image):
         self._layer = BULLET_LAYER
         self.groups = game.all_sprites, game.arrows
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = game.arrow_img
+        self.image = arrow_image
         self.rect = self.image.get_rect()
         self.pos = vec(pos)
         self.rect.center = pos
@@ -276,12 +301,12 @@ class Arrow(pg.sprite.Sprite):
             self.kill()
 
 class Melee(pg.sprite.Sprite):
-    def __init__(self,game,pos):
+    def __init__(self,game,pos,image):
         self._layer = BULLET_LAYER
         self.groups = game.all_sprites, game.arrows
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = game.melee_img
+        self.image = image
         self.rect = self.image.get_rect()
         self.pos = pos
         self.rect.center = pos

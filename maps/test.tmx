@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="897">
- <tileset firstgid="1" source="../../../Documents/Asets.tsx"/>
- <tileset firstgid="113" source="../../../Documents/tilesheet_complete.tsx"/>
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="914">
+ <tileset firstgid="1" source="Asets.tsx"/>
+ <tileset firstgid="113" source="tilesheet_complete.tsx"/>
  <tileset firstgid="2273" source="tile-8bit.tsx"/>
  <layer id="1" name="Tile Layer 1" width="100" height="100">
   <data encoding="csv">
@@ -333,5 +333,22 @@
   <object id="225" name="wall" x="1248" y="512" width="96" height="1024"/>
   <object id="226" name="wall" x="1344" y="544" width="160" height="1056"/>
   <object id="232" name="mob" x="768" y="672" width="32" height="32"/>
+  <object id="897" name="mob" x="224" y="864" width="32" height="32"/>
+  <object id="898" name="mob" x="960" y="896" width="32" height="32"/>
+  <object id="899" name="mob" x="992" y="1280" width="32" height="32"/>
+  <object id="900" name="mob" x="256" y="1696" width="32" height="32"/>
+  <object id="901" name="mob" x="832" y="1888" width="32" height="32"/>
+  <object id="902" name="mob" x="960" y="2144" width="32" height="32"/>
+  <object id="903" name="mob" x="1312" y="1824" width="32" height="32"/>
+  <object id="904" name="mob" x="2144" y="1952" width="32" height="32"/>
+  <object id="905" name="mob" x="2656" y="1920" width="32" height="32"/>
+  <object id="906" name="mob" x="2528" y="1184" width="32" height="32"/>
+  <object id="907" name="mob" x="1760" y="1216" width="32" height="32"/>
+  <object id="908" name="mob" x="2016" y="736" width="32" height="32"/>
+  <object id="909" name="mob" x="2656" y="224" width="32" height="32"/>
+  <object id="910" name="mob" x="2368" y="352" width="32" height="32"/>
+  <object id="911" name="mob" x="2720" y="384" width="32" height="32"/>
+  <object id="912" name="mob" x="832" y="288" width="32" height="32"/>
+  <object id="913" name="health" x="1600" y="2272" width="32" height="32"/>
  </objectgroup>
 </map>

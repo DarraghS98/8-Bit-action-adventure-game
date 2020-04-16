@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.1" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="478">
- <tileset firstgid="1" source="../../../Documents/Asets.tsx"/>
- <tileset firstgid="113" source="../../../Documents/tilesheet_complete.tsx"/>
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="490">
+ <tileset firstgid="1" source="Asets.tsx"/>
+ <tileset firstgid="113" source="tilesheet_complete.tsx"/>
  <tileset firstgid="2273" source="tile-8bit.tsx"/>
  <layer id="1" name="Tile Layer 1" width="100" height="100">
   <data encoding="csv">
@@ -241,7 +241,6 @@
   <object id="298" name="wall" x="1536" y="1920" width="96" height="32"/>
   <object id="299" name="wall" x="1184" y="1504" width="32" height="128"/>
   <object id="300" name="wall" x="1920" y="1536" width="32" height="96"/>
-  <object id="317" name="player" x="2816" y="2816" width="32" height="32"/>
   <object id="362" name="wall" x="768" y="0" width="1664" height="32"/>
   <object id="363" x="3520" y="480"/>
   <object id="364" name="wall" x="0" y="0" width="32" height="32"/>
@@ -339,14 +338,14 @@
   <object id="456" name="wall" x="672" y="3168" width="32" height="32"/>
   <object id="457" name="wall" x="704" y="3168" width="32" height="32"/>
   <object id="458" name="wall" x="736" y="3168" width="32" height="32"/>
-  <object id="469" name="mob" x="1280" y="1312" width="32" height="32"/>
-  <object id="470" name="mob" x="1536" y="1312" width="32" height="32"/>
-  <object id="471" name="mob" x="1824" y="1312" width="32" height="32"/>
-  <object id="472" name="mob" x="1792" y="1536" width="32" height="32"/>
-  <object id="473" name="mob" x="1536" y="1536" width="32" height="32"/>
-  <object id="474" name="mob" x="1280" y="1536" width="32" height="32"/>
-  <object id="475" name="mob" x="1312" y="1760" width="32" height="32"/>
-  <object id="476" name="mob" x="1536" y="1760" width="32" height="32"/>
-  <object id="477" name="mob" x="1792" y="1760" width="32" height="32"/>
+  <object id="481" name="player" x="2816" y="2784" width="32" height="32"/>
+  <object id="482" name="mob" x="1568" y="2336" width="32" height="32"/>
+  <object id="483" name="health" x="384" y="2784" width="32" height="32"/>
+  <object id="484" name="health" x="384" y="352" width="32" height="32"/>
+  <object id="485" name="health" x="2848" y="384" width="32" height="32"/>
+  <object id="486" name="health" x="2752" y="1664" width="32" height="32"/>
+  <object id="487" name="health" x="384" y="1664" width="32" height="32"/>
+  <object id="488" name="health" x="352" y="1440" width="32" height="32"/>
+  <object id="489" name="health" x="2752" y="1472" width="32" height="32"/>
  </objectgroup>
 </map>

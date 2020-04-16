@@ -1,2 +1,5 @@
-pygame
-pytmx
+Run these commands in command line
+Python 3.7.2 was used, other Python version may work but Pygame is NOT gaurenteed to work on this project with other versions.
+
+pip install pygame
+pip install pytmx
