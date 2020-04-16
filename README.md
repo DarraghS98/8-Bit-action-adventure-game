@@ -6,7 +6,9 @@ Over the coming months this game will be under development and will be done by t
 
 # Installation
 To install download the repo. In requirements.txt you will find all the dependencies. These can be installed using ``pip install pygame``
-``pip install pytmx``
+
+``pip install pytmx``.
+
 requirements.txt contains the dependencies that are required.
 Then run main using Python main.py
 
